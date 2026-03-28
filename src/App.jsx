@@ -1,20 +1,15 @@
 import React from "react";
-import Header from "./components/Header";
-import GitHubProfile from "./components/GitHubProfile";
-import WeatherInfo from "./components/WeatherInfo";
-import TechNews from "./components/TechNews";
+import { Routes, Route } from "react-router";
 import "./App.css";
+import Login from "./pages/Login";
+import HomePage from "./pages/HomePage";
 
 const App = () => {
   return (
-    <div className="app">
-      <Header />
-      <div className="dashboardGrid">
-        <GitHubProfile />
-        <WeatherInfo />
-        <TechNews />
-      </div>
-    </div>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/homepage" element={<HomePage />} />
+    </Routes>
   );
 };
 
