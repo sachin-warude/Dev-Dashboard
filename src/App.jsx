@@ -1,14 +1,19 @@
 import React from "react";
-import { Routes, Route } from "react-router";
-import "./App.css";
+import { Routes, Route, Navigate } from "react-router";
 import Login from "./pages/Login";
 import HomePage from "./pages/HomePage";
 
 const App = () => {
+  const isAuthenticate = true;
+
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/homepage" element={<HomePage />} />
+      <Route index element={<Navigate to={<Login />} replace />} />
+      {isAuthenticate ? (
+        <Route path="/homepage" element={<HomePage />} />
+      ) : (
+        <Route path="/login" element={<Login />} />
+      )}
     </Routes>
   );
 };
