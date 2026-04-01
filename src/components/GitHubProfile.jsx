@@ -5,11 +5,27 @@ import Loading from "./Loading";
 import Error from "./Error";
 
 const GitHubProfile = () => {
+  const [topRepoData, setTopRepoData] = useState([]);
   const { data, error, isLoading } = useFetch(
     "https://api.github.com/users/sachin-warude",
   );
-  if (isLoading) return <Loading />;
-  if (error) return <Error message={error} />;
+  const {
+    data: starData,
+    error: starError,
+    isLoading: starLoading,
+  } = useFetch(
+    data ? `https://api.github.com/users/${data?.login}/starred` : null,
+  );
+  useEffect(() => {
+    if (starData) {
+      const topRepo = starData
+        .toSorted((a, b) => b.stargazers_count - a.stargazers_count)
+        .slice(0, 3);
+      setTopRepoData(topRepo);
+    }
+  }, [starData, starData]);
+  if (isLoading || starLoading) return <Loading />;
+  if (error || starError) return <Error message={error || starError} />;
   return (
     <>
       {!isLoading && !error && (
@@ -50,29 +66,26 @@ const GitHubProfile = () => {
               <span className={styles.statValue}>{data?.followers ?? 0}</span>
             </div>
           </div>
-
           <div className={styles.topRepos}>
             <h4 className={styles.topReposTitle}>Top Repositories</h4>
             <div className={styles.repoList}>
-              <div className={styles.repoItem}>
-                <span className={styles.repoStar}>⭐</span>
-                <span className={styles.repoName}>React-Project</span>
-                <span className={styles.repoStars}>Stars: 120</span>
-              </div>
-              <div className={styles.repoItem}>
-                <span className={styles.repoStar}>⭐</span>
-                <span className={styles.repoName}>Node-App</span>
-                <span className={styles.repoStars}>Stars: 90</span>
-              </div>
-              <div className={styles.repoItem}>
-                <span className={styles.repoStar}>⭐</span>
-                <span className={styles.repoName}>CSS-Toolkit</span>
-                <span className={styles.repoStars}>Stars: 65</span>
-              </div>
+              {topRepoData.map((repo) => {
+                return (
+                  <div className={styles.repoItem} key={repo.id}>
+                    <span className={styles.repoStar}>⭐</span>
+                    <span className={styles.repoName}>{repo.name}</span>
+                    <span className={styles.repoStars}>
+                      Stars: {repo.stargazers_count}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
-          <button className={styles.viewBtn}>View on GitHub</button>
+          <a href={data?.html_url} target="_blank">
+            <button className={styles.viewBtn}>View on GitHub</button>
+          </a>
         </div>
       )}
     </>
