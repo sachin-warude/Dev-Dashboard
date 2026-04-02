@@ -1,14 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./TechNews.module.css";
+import { useFetch } from "../hooks/useFetch";
 
+const newsItems = [
+  "JavaScript Frameworks to Watch in 2024",
+  "AI Innovations Transforming the Industry",
+  "Apple Unveils New AR Glasses",
+  "Quantum Computing Breakthrough Achieved",
+];
+const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
 const TechNews = () => {
-  const newsItems = [
-    "JavaScript Frameworks to Watch in 2024",
-    "AI Innovations Transforming the Industry",
-    "Apple Unveils New AR Glasses",
-    "Quantum Computing Breakthrough Achieved",
-  ];
+  const { data, error, isLoading } = useFetch(
+    `https://newsapi.org/v2/top-headlines?category=technology&apiKey=${API_KEY}`,
+  );
 
+  useEffect(() => {
+    console.log(data);
+    console.log(error);
+    console.log(isLoading);
+  }, [data, error, isLoading]);
   return (
     <div className={styles.card}>
       <h2 className={styles.cardTitle}>Tech News</h2>

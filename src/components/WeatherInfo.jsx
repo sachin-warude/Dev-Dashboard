@@ -5,7 +5,7 @@ import { useGeolocation } from "../hooks/useGeoLocation";
 import Loading from "./Loading";
 import Error from "./Error";
 
-const apiKey = import.meta.env.VITE_API_KEY;
+const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
 const WeatherInfo = () => {
   const {
     latitude: lat,
@@ -32,13 +32,6 @@ const WeatherInfo = () => {
     50: "🌫️",
   };
   const key = iconCode?.slice(0, 2);
-  useEffect(() => {
-    console.log(lat);
-    console.log(lng);
-    console.log(data);
-    console.log(error);
-    console.log(isLoading);
-  }, [data, error, isLoading, lat, lng]);
 
   if (isLoading) return <Loading />;
   if (error || locationError) return <Error message={error || locationError} />;
