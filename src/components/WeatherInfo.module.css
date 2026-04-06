@@ -5,7 +5,10 @@
   color: #fff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
+  flex-flow: nowrap;
   flex-direction: column;
+  height: 500px;
+
   gap: 1rem;
 }
 

@@ -3,6 +3,7 @@ import styles from "./GitHubProfile.module.css";
 import { useFetch } from "../hooks/useFetch";
 import Loading from "./Loading";
 import Error from "./Error";
+import Button from "./Button";
 
 const GitHubProfile = () => {
   const [topRepoData, setTopRepoData] = useState([]);
@@ -83,9 +84,13 @@ const GitHubProfile = () => {
             </div>
           </div>
 
-          <a href={data?.html_url} target="_blank">
-            <button className={styles.viewBtn}>View on GitHub</button>
-          </a>
+          <Button
+            className={styles.viewBtn}
+            href={data?.html_url}
+            target="_blank"
+          >
+            View on GitHub
+          </Button>
         </div>
       )}
     </>
