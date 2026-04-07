@@ -7,9 +7,10 @@ import Error from "./Error";
 import Button from "./Button";
 
 const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
+const PAGESIZE = 5;
 const TechNews = () => {
   const { data, error, isLoading } = useFetch(
-    `https://newsapi.org/v2/top-headlines?category=technology&apiKey=${API_KEY}`,
+    `https://newsapi.org/v2/top-headlines?category=technology&pageSize=${PAGESIZE}&apiKey=${API_KEY}`,
   );
   const navigate = useNavigate();
   console.log(data);
@@ -23,16 +24,19 @@ const TechNews = () => {
         {data?.articles?.slice(0, 5)?.map((item, index) => (
           <div key={index} className={styles.newsItem}>
             <span className={styles.bullet}>•</span>
-            <p className={styles.newsText}>{item.title}</p>
+            <Button href={item.url} className={styles.newsText} target="_blank">
+              {item.title}
+            </Button>
           </div>
         ))}
       </div>
-      <Button className={styles.moreBtn} onClick={() => navigate("/moreNews")}>
+      <Button
+        className={styles.moreBtn}
+        onClick={() => navigate("/morenews")}
+        target="_blank"
+      >
         More News <span className={styles.arrow}>›</span>
       </Button>
-      {/* <button className={styles.moreBtn}>
-        More News <span className={styles.arrow}>›</span>
-      </button> */}
     </div>
   );
 };

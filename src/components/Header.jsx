@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./Header.module.css";
+import Button from "./Button";
 
 const Header = () => {
   const handleRefresh = () => {
@@ -12,9 +13,9 @@ const Header = () => {
         <h1 className={styles.title}>Dev Dashboard</h1>
         <p className={styles.subtitle}>Your Developer Productivity Hub</p>
       </div>
-      <button className={styles.refreshBtn} onClick={handleRefresh}>
+      <Button className={styles.refreshBtn} onClick={handleRefresh}>
         Refresh Data <span className={styles.arrow}>›</span>
-      </button>
+      </Button>
     </header>
   );
 };

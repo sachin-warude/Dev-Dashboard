@@ -5,7 +5,7 @@ import HomePage from "./pages/HomePage";
 import MoreNews from "./pages/MoreNews";
 
 const App = () => {
-  const isAuthenticate = true;
+  const isAuthenticate = false;
 
   return (
     <Routes>
@@ -15,7 +15,7 @@ const App = () => {
       ) : (
         <Route path="/login" element={<Login />} />
       )}
-      <Route path="/moreNews" element={<MoreNews />} />
+      <Route path="/morenews" element={<MoreNews />} />
     </Routes>
   );
 };

@@ -1,15 +1,50 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
+import axios from "axios";
 import styles from "./Login.module.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ email, password, rememberMe });
-    // Add authentication logic here
+    setError("");
+    setLoading(true);
+
+    try {
+      const response = await axios.post(`${API_URL}/auth/login`, {
+        email,
+        username,
+        password,
+        rememberMe,
+      });
+
+      if (response.data.success) {
+        // Store token and user info
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+
+        if (rememberMe) {
+          localStorage.setItem("rememberMe", "true");
+        }
+
+        // Navigate to home page
+        navigate("/");
+      }
+    } catch (err) {
+      setError(err.response?.data?.error || "Login failed. Please try again.");
+      console.error("Login error:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -21,6 +56,8 @@ const Login = () => {
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
+          {error && <div className={styles.errorMessage}>{error}</div>}
+
           <div className={styles.formGroup}>
             <label htmlFor="email" className={styles.label}>
               Email Address
@@ -33,9 +70,24 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
-
+          <div className={styles.formGroup}>
+            <label htmlFor="username" className={styles.label}>
+              GitHub UserName
+            </label>
+            <input
+              type="username"
+              id="username"
+              className={styles.input}
+              placeholder="Enter your gitHub username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              disabled={loading}
+            />
+          </div>
           <div className={styles.formGroup}>
             <label htmlFor="password" className={styles.label}>
               Password
@@ -46,8 +98,10 @@ const Login = () => {
               className={styles.input}
               placeholder="Enter your password"
               value={password}
+              suggested="current-password"
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
 
@@ -58,6 +112,7 @@ const Login = () => {
               className={styles.checkbox}
               checked={rememberMe}
               onChange={(e) => setRememberMe(e.target.checked)}
+              disabled={loading}
             />
             <label htmlFor="rememberMe" className={styles.checkboxLabel}>
               Remember me
@@ -67,8 +122,8 @@ const Login = () => {
             </a>
           </div>
 
-          <button type="submit" className={styles.submitBtn}>
-            Sign In
+          <button type="submit" className={styles.submitBtn} disabled={loading}>
+            {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
 
