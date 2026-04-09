@@ -3,31 +3,45 @@ import { useNavigate } from "react-router";
 import styles from "./Login.module.css";
 import { useAuth } from "../context/AuthContext";
 
-const Login = () => {
+const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { register } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    // Validate passwords match
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    // Validate password length
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await login(email, password, rememberMe);
+      await register(email, username, password);
       // Navigate to home page on success
       navigate("/homepage");
     } catch (err) {
       setError(
         err.response?.data?.error ||
           err.message ||
-          "Login failed. Please try again.",
+          "Registration failed. Please try again.",
       );
-      console.error("Login error:", err);
+      console.error("Registration error:", err);
     } finally {
       setLoading(false);
     }
@@ -37,8 +51,8 @@ const Login = () => {
     <div className={styles.loginContainer}>
       <div className={styles.loginBox}>
         <div className={styles.header}>
-          <h1 className={styles.title}>DevHub</h1>
-          <p className={styles.subtitle}>Developer Productivity Hub</p>
+          <h1 className={styles.title}>Create Account</h1>
+          <p className={styles.subtitle}>Join Developer Productivity Hub</p>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
@@ -59,6 +73,23 @@ const Login = () => {
               disabled={loading}
             />
           </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="username" className={styles.label}>
+              GitHub UserName
+            </label>
+            <input
+              type="text"
+              id="username"
+              className={styles.input}
+              placeholder="Enter your GitHub username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              disabled={loading}
+            />
+          </div>
+
           <div className={styles.formGroup}>
             <label htmlFor="password" className={styles.label}>
               Password
@@ -67,8 +98,8 @@ const Login = () => {
               type="password"
               id="password"
               className={styles.input}
-              placeholder="Enter your password"
-              autoComplete="current-password"
+              placeholder="Enter a password (min 6 characters)"
+              autoComplete="new-password"
               onChange={(e) => setPassword(e.target.value)}
               value={password}
               required
@@ -76,25 +107,25 @@ const Login = () => {
             />
           </div>
 
-          <div className={styles.checkboxGroup}>
+          <div className={styles.formGroup}>
+            <label htmlFor="confirmPassword" className={styles.label}>
+              Confirm Password
+            </label>
             <input
-              type="checkbox"
-              id="rememberMe"
-              className={styles.checkbox}
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
+              type="password"
+              id="confirmPassword"
+              className={styles.input}
+              placeholder="Confirm your password"
+              autoComplete="new-password"
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              value={confirmPassword}
+              required
               disabled={loading}
             />
-            <label htmlFor="rememberMe" className={styles.checkboxLabel}>
-              Remember me
-            </label>
-            <a href="#" className={styles.forgotLink}>
-              Forgot password?
-            </a>
           </div>
 
           <button type="submit" className={styles.submitBtn} disabled={loading}>
-            {loading ? "Signing in..." : "Sign In"}
+            {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
 
@@ -108,11 +139,11 @@ const Login = () => {
 
         <div className={styles.footer}>
           <p>
-            Don't have an account?{" "}
+            Already have an account?{" "}
             <button
               type="button"
               className={styles.signupLink}
-              onClick={() => navigate("/register")}
+              onClick={() => navigate("/login")}
               style={{
                 background: "none",
                 border: "none",
@@ -121,7 +152,7 @@ const Login = () => {
                 textDecoration: "underline",
               }}
             >
-              Sign up here
+              Sign in here
             </button>
           </p>
         </div>
@@ -148,4 +179,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

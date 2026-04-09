@@ -12,13 +12,13 @@ const generateToken = (userId, email) => {
 
 export const login = async (req, res) => {
   try {
-    const { email, username, password, rememberMe } = req.body;
+    const { email, password, rememberMe } = req.body;
 
     // Validate input
-    if (!email || !password || !username) {
+    if (!email || !password) {
       return res.status(400).json({
         success: false,
-        error: "Email, username, and password are required",
+        error: "Email and password are required",
       });
     }
 
